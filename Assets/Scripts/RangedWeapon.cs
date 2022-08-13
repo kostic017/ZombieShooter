@@ -9,7 +9,16 @@ public class RangedWeapon : Weapon
     private AudioSource reloadSound;
 
     [SerializeField]
-    private int maxBullets;
+    private AudioSource emptyMagSound;
+
+    [SerializeField]
+    private int magazineSize;
+
+    [SerializeField]
+    private int totalBullets;
+
+    [SerializeField]
+    private int shotInOneShot = 1;
 
     [SerializeField]
     private float range = 100f;
@@ -17,28 +26,47 @@ public class RangedWeapon : Weapon
     [SerializeField]
     private float shootDamage;
 
-    private int bullets;
+    private int bulletsInMag;
 
     private void Awake()
     {
-        bullets = maxBullets;
+        bulletsInMag = magazineSize;
     }
 
     public void Shoot(Vector2 direction)
     {
-        if (bullets <= 0)
+        if (bulletsInMag > 0)
         {
-            animator.SetTrigger("Reload");
-            reloadSound.Play();
-            bullets = maxBullets;
+            animator.SetTrigger("Shoot");
+            shootSound.Play();
+            bulletsInMag -= shotInOneShot;
+            totalBullets -= shotInOneShot;
+
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, range, LayerMask.GetMask("Zombies"));
+            if (hit)
+                hit.transform.GetComponent<Zombie>().TakeDamage(shootDamage);
         }
+        else
+        {
+            emptyMagSound.Play();
+        }
+    }
 
-        animator.SetTrigger("Shoot");
-        shootSound.Play();
-        --bullets;
-
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, range, LayerMask.GetMask("Zombies"));
-        if (hit)
-            hit.transform.GetComponent<Zombie>().TakeDamage(shootDamage);
+    public void Reload()
+    {
+        if (totalBullets > 0)
+        {
+            if (bulletsInMag < magazineSize)
+            {
+                animator.SetTrigger("Reload");
+                reloadSound.Play();
+                bulletsInMag = magazineSize;
+                totalBullets -= magazineSize;
+            }
+        }
+        else
+        {
+            emptyMagSound.Play();
+        }
     }
 }

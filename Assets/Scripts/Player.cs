@@ -47,6 +47,9 @@ public class Player : MonoBehaviour
             ChangeWeapon((int)currentWeapon - 1);
         else if (Input.GetAxis("Mouse ScrollWheel") < 0f)
             ChangeWeapon((int)currentWeapon + 1);
+
+        if (Input.GetKeyUp(KeyCode.R) && weapons[(int)currentWeapon] is RangedWeapon weapon)
+            weapon.Reload();
     }
 
     private void FixedUpdate()
