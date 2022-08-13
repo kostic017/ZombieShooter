@@ -13,15 +13,15 @@ public class Zombie : MonoBehaviour
     private GameObject dropsItem;
 
     private Player player;
-
-    private Vector2 movement;
-
     private Rigidbody2D rb;
     private Animator animator;
     private HealthBar healthBar;
     private GameManager gameManager;
-    private SpriteRenderer spriteRenderer;
 
+    private Vector2 movement;
+
+    private bool active;
+    
     private float health;
 
     private void Start()
@@ -32,13 +32,12 @@ public class Zombie : MonoBehaviour
         animator = GetComponent<Animator>();
         gameManager = FindObjectOfType<GameManager>();
         healthBar = GetComponentInChildren<HealthBar>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
         healthBar.SetHealth(health);
     }
 
     private void Update()
     {
-        if (spriteRenderer.isVisible)
+        if (active)
         {
             if (!IsAttacking())
             {
@@ -66,6 +65,16 @@ public class Zombie : MonoBehaviour
             animator.SetTrigger("Attack");
             StartCoroutine(DealDamage());
         }
+    }
+
+    private void OnBecameVisible()
+    {
+        active = true;
+    }
+
+    private void OnBecameInvisible()
+    {
+        active = false;
     }
 
     private IEnumerator DealDamage()
