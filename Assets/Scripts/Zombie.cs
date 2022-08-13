@@ -1,14 +1,15 @@
+using System.Collections;
 using UnityEngine;
 
 public class Zombie : MonoBehaviour
 {
     [SerializeField]
-    private float maxHealth = 100;
-
-    [SerializeField]
     private float speed = 5f;
 
-    private Transform target;
+    [SerializeField]
+    private float damageDealt = 10f;
+
+    private Player player;
 
     private Vector2 movement;
 
@@ -21,39 +22,62 @@ public class Zombie : MonoBehaviour
 
     private void Start()
     {
-        health = maxHealth;
+        health = 100f;
         rb = GetComponent<Rigidbody2D>();
+        player = FindObjectOfType<Player>();
         animator = GetComponent<Animator>();
         healthBar = GetComponentInChildren<HealthBar>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        target = FindObjectOfType<Player>().transform;
-        healthBar.SetHealth(maxHealth, maxHealth);
+        healthBar.SetHealth(health);
     }
 
     private void Update()
     {
         if (spriteRenderer.isVisible)
         {
-            movement = (target.position - transform.position).normalized;
-            float angle = Mathf.Atan2(movement.y, movement.x) * Mathf.Rad2Deg;
-            rb.rotation = angle;
+            if (!IsAttacking())
+            {
+                animator.SetBool("IsMoving", true);
+                movement = (player.transform.position - transform.position).normalized;
+            }
         }
         else
         {
             movement = Vector2.zero;
+            animator.SetBool("IsMoving", false);
         }
-        animator.SetBool("IsMoving", movement != Vector2.zero);
     }
 
     private void FixedUpdate()
     {
         rb.velocity = new Vector2(movement.x, movement.y) * speed;
+        rb.rotation = Mathf.Atan2(movement.y, movement.x) * Mathf.Rad2Deg;
+    }
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (!IsAttacking() && other.gameObject.CompareTag("Player"))
+        {
+            animator.SetTrigger("Attack");
+            StartCoroutine(DealDamage());
+        }
+    }
+
+    private IEnumerator DealDamage()
+    {
+        yield return new WaitForSecondsRealtime(animator.GetCurrentAnimatorStateInfo(0).length);
+        player.TakeDamage(damageDealt);
+    }
+
+    private bool IsAttacking()
+    {
+        return animator.GetCurrentAnimatorStateInfo(0).IsName("Attack");
     }
 
     public void TakeDamage(float amount)
     {
         health -= amount;
-        healthBar.SetHealth(health, maxHealth);
+        healthBar.SetHealth(health);
         if (health <= 0)
             Destroy(gameObject);
     }

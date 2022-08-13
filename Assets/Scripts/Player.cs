@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -8,17 +9,26 @@ public class Player : MonoBehaviour
     [SerializeField]
     private Weapon[] weapons;
 
-    private Rigidbody2D rb;
+    [SerializeField]
+    private int unlockedWeapons = 2;
 
-    private int currentWeapon;
-    private int unlockedWeapons = 1;
+    [SerializeField]
+    private WeaponType currentWeapon;
+
+    private Rigidbody2D rb;
+    private HealthBar healthBar;
 
     private Vector2 movement;
     private Vector2 mousePosition;
 
+    private float health = 100f;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        weapons[(int)currentWeapon].gameObject.SetActive(true);
+        healthBar = GetComponentInChildren<HealthBar>();
+        healthBar.SetHealth(health);
     }
 
     private void Update()
@@ -26,7 +36,7 @@ public class Player : MonoBehaviour
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        weapons[currentWeapon].SetIsMoving(movement != Vector2.zero);
+        weapons[(int)currentWeapon].SetIsMoving(movement != Vector2.zero);
 
         if (Input.GetMouseButtonDown(0))
             Shoot();
@@ -34,37 +44,16 @@ public class Player : MonoBehaviour
             Melee();
 
         if (Input.GetAxis("Mouse ScrollWheel") > 0f)
-            ChangeWeapon(currentWeapon + 1);
+            ChangeWeapon((int)currentWeapon - 1);
         else if (Input.GetAxis("Mouse ScrollWheel") < 0f)
-            ChangeWeapon(currentWeapon - 1);
+            ChangeWeapon((int)currentWeapon + 1);
     }
 
     private void FixedUpdate()
     {
         rb.MovePosition(rb.position + speed * Time.fixedDeltaTime * movement.normalized);
         Vector2 lookDirection = mousePosition - rb.position;
-        float angle = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg;
-        rb.rotation = angle;
-    }
-
-    private void ChangeWeapon(int weapon)
-    {
-        if (weapon >= unlockedWeapons) weapon = 0;
-        if (weapon < 0) weapon = unlockedWeapons - 1;
-        weapons[currentWeapon].gameObject.SetActive(false);
-        weapons[weapon].gameObject.SetActive(true);
-        currentWeapon = weapon;
-    }
-
-    private void Shoot()
-    {
-        if (weapons[currentWeapon] is RangedWeapon weapon)
-            weapon.Shoot(mousePosition - rb.position);
-    }
-
-    private void Melee()
-    {
-        weapons[currentWeapon].Melee();
+        rb.rotation = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg;
     }
 
     private void OnCollisionEnter2D(Collision2D other)
@@ -74,5 +63,33 @@ public class Player : MonoBehaviour
             unlockedWeapons++;
             Destroy(other.gameObject);
         }
+    }
+
+    private void ChangeWeapon(int weapon)
+    {
+        if (weapon >= unlockedWeapons) weapon = 0;
+        if (weapon < 0) weapon = unlockedWeapons - 1;
+        weapons[(int)currentWeapon].gameObject.SetActive(false);
+        weapons[weapon].gameObject.SetActive(true);
+        currentWeapon = (WeaponType)weapon;
+    }
+
+    private void Shoot()
+    {
+        if (weapons[(int)currentWeapon] is RangedWeapon weapon)
+            weapon.Shoot(mousePosition - rb.position);
+    }
+
+    private void Melee()
+    {
+        weapons[(int)currentWeapon].Melee();
+    }
+
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+        healthBar.SetHealth(health);
+        if (health <= 0)
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

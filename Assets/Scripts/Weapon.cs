@@ -1,5 +1,13 @@
 using UnityEngine;
 
+public enum WeaponType
+{
+    Knife,
+    Handgun,
+    Rifle,
+    Shotgun
+}
+
 public class Weapon : MonoBehaviour
 {
     [SerializeField]
@@ -29,7 +37,7 @@ public class Weapon : MonoBehaviour
     {
         animator.SetTrigger("Melee");
         var zombie = Physics2D.OverlapCircle(meleePoint.position, meleeRange, LayerMask.GetMask("Zombies"));
-        if (zombie != null)
+        if (zombie)
         {
             meleeHitSound.Play();
             zombie.GetComponent<Zombie>().TakeDamage(meleeDamage);

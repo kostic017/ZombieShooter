@@ -15,14 +15,15 @@ public class HealthBar : MonoBehaviour
     [SerializeField]
     private Vector3 offset;
 
-    private void Update()
+    private void LateUpdate()
     {
         slider.transform.position = Camera.main.WorldToScreenPoint(transform.parent.position + offset);
     }
 
-    public void SetHealth(float health, float maxHealth)
+    public void SetHealth(float health)
     {
-        slider.maxValue = maxHealth;
+        slider.gameObject.SetActive(health < 100f);
+        slider.maxValue = 100f;
         slider.value = health;
         slider.fillRect.GetComponentInChildren<Image>().color = Color.Lerp(low, high, slider.normalizedValue);
     }

@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Trigger : MonoBehaviour
 {
+    private bool activated;
     private AudioSource audioSource;
 
     private void Start()
@@ -13,17 +14,15 @@ public class Trigger : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        var player = other.gameObject.GetComponentInParent<Player>();
-        if (player)
-            StartCoroutine(Play(player));
+        if (!activated && other.gameObject.CompareTag("Player"))
+            StartCoroutine(Play());
     }
 
-    private IEnumerator Play(Player player)
+    private IEnumerator Play()
     {
-        player.enabled = false;
+        activated = true;
         audioSource.Play();
         yield return new WaitWhile(() => audioSource.isPlaying);
-        player.enabled = true;
         gameObject.SetActive(false);
     }
 }
