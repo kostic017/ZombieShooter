@@ -24,9 +24,11 @@ public class Weapon : MonoBehaviour
     
     [SerializeField]
     private AudioSource meleeWhooshSound;
-    
+
     [SerializeField]
     protected Animator animator;
+
+    public WeaponType type;
 
     public void SetIsMoving(bool isMoving)
     {

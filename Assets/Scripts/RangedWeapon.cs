@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class RangedWeapon : Weapon
@@ -68,5 +69,10 @@ public class RangedWeapon : Weapon
         {
             emptyMagSound.Play();
         }
+    }
+
+    public void AddAmmo(int amount)
+    {
+        totalBullets += amount;
     }
 }

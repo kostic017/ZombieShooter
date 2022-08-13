@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,26 +8,24 @@ public class Player : MonoBehaviour
     private float speed = 5f;
 
     [SerializeField]
-    private Weapon[] weapons;
-
-    [SerializeField]
-    private int unlockedWeapons = 2;
-
-    [SerializeField]
-    private WeaponType currentWeapon;
+    private AudioSource pickupSound;
 
     private Rigidbody2D rb;
     private HealthBar healthBar;
 
+    private readonly Dictionary<WeaponType, Weapon> weapons = new();
+
     private Vector2 movement;
     private Vector2 mousePosition;
+
+    private WeaponType currentWeapon;
 
     private float health = 100f;
 
     private void Start()
     {
+        InitializeWeapon();
         rb = GetComponent<Rigidbody2D>();
-        weapons[(int)currentWeapon].gameObject.SetActive(true);
         healthBar = GetComponentInChildren<HealthBar>();
         healthBar.SetHealth(health);
     }
@@ -36,7 +35,7 @@ public class Player : MonoBehaviour
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        weapons[(int)currentWeapon].SetIsMoving(movement != Vector2.zero);
+        weapons[currentWeapon].SetIsMoving(movement != Vector2.zero);
 
         if (Input.GetMouseButtonDown(0))
             Shoot();
@@ -44,11 +43,11 @@ public class Player : MonoBehaviour
             Melee();
 
         if (Input.GetAxis("Mouse ScrollWheel") > 0f)
-            ChangeWeapon((int)currentWeapon - 1);
+            ChangeWeapon(-1);
         else if (Input.GetAxis("Mouse ScrollWheel") < 0f)
-            ChangeWeapon((int)currentWeapon + 1);
+            ChangeWeapon(+1);
 
-        if (Input.GetKeyUp(KeyCode.R) && weapons[(int)currentWeapon] is RangedWeapon weapon)
+        if (Input.GetKeyUp(KeyCode.R) && weapons[currentWeapon] is RangedWeapon weapon)
             weapon.Reload();
     }
 
@@ -59,33 +58,75 @@ public class Player : MonoBehaviour
         rb.rotation = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg;
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Weapon"))
         {
-            unlockedWeapons++;
+            var collectable = other.gameObject.GetComponent<WeaponCollectable>();
+
+            if (!weapons.ContainsKey(collectable.type))
+                weapons.Add(collectable.type, FindWeapon(collectable.type));
+            if (weapons[collectable.type] is RangedWeapon weapon)
+                weapon.AddAmmo(collectable.amount);
+
+            pickupSound.Play();
             Destroy(other.gameObject);
         }
     }
 
-    private void ChangeWeapon(int weapon)
+    private void InitializeWeapon()
     {
-        if (weapon >= unlockedWeapons) weapon = 0;
-        if (weapon < 0) weapon = unlockedWeapons - 1;
-        weapons[(int)currentWeapon].gameObject.SetActive(false);
-        weapons[weapon].gameObject.SetActive(true);
-        currentWeapon = (WeaponType)weapon;
+        var weapon = FindObjectOfType<Weapon>();
+        weapons.Add(weapon.type, weapon);
+        currentWeapon = weapon.type;
+    }
+
+    private Weapon FindWeapon(WeaponType type)
+    {
+        foreach (var weapon in FindObjectsOfType<Weapon>(true))
+            if (weapon.type == type)
+                return weapon;
+        return null;
+    }
+
+    private void ChangeWeapon(int value)
+    {
+        WeaponType newWeapon = currentWeapon + value;
+        if (value > 0)
+        {
+            while (!weapons.ContainsKey(newWeapon))
+            {
+                ++newWeapon;
+                if (newWeapon > WeaponType.Shotgun)
+                    newWeapon = WeaponType.Knife;
+            }
+        }
+        else
+        {
+            while (!weapons.ContainsKey(newWeapon))
+            {
+                --newWeapon;
+                if (newWeapon < WeaponType.Knife)
+                    newWeapon = WeaponType.Shotgun;
+            }
+        }
+        if (weapons.ContainsKey(newWeapon))
+        {
+            weapons[currentWeapon].gameObject.SetActive(false);
+            weapons[newWeapon].gameObject.SetActive(true);
+            currentWeapon = newWeapon;
+        }
     }
 
     private void Shoot()
     {
-        if (weapons[(int)currentWeapon] is RangedWeapon weapon)
+        if (weapons[currentWeapon] is RangedWeapon weapon)
             weapon.Shoot(mousePosition - rb.position);
     }
 
     private void Melee()
     {
-        weapons[(int)currentWeapon].Melee();
+        weapons[currentWeapon].Melee();
     }
 
     public void TakeDamage(float damage)
