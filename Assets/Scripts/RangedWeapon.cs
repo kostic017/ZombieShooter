@@ -61,8 +61,8 @@ public class RangedWeapon : Weapon
             {
                 animator.SetTrigger("Reload");
                 reloadSound.Play();
+                totalBullets -= bulletsInMag;
                 bulletsInMag = magazineSize;
-                totalBullets -= magazineSize;
             }
         }
         else

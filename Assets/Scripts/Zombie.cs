@@ -9,6 +9,9 @@ public class Zombie : MonoBehaviour
     [SerializeField]
     private float damageDealt = 10f;
 
+    [SerializeField]
+    private GameObject dropsItem;
+
     private Player player;
 
     private Vector2 movement;
@@ -16,6 +19,7 @@ public class Zombie : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animator;
     private HealthBar healthBar;
+    private GameManager gameManager;
     private SpriteRenderer spriteRenderer;
 
     private float health;
@@ -26,6 +30,7 @@ public class Zombie : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         player = FindObjectOfType<Player>();
         animator = GetComponent<Animator>();
+        gameManager = FindObjectOfType<GameManager>();
         healthBar = GetComponentInChildren<HealthBar>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         healthBar.SetHealth(health);
@@ -79,6 +84,11 @@ public class Zombie : MonoBehaviour
         health -= amount;
         healthBar.SetHealth(health);
         if (health <= 0)
+        {
+            if (dropsItem != null)
+                Instantiate(dropsItem, transform.position, Quaternion.identity);
+            gameManager.ZombieKilled();
             Destroy(gameObject);
+        }
     }
 }
