@@ -43,6 +43,8 @@ public class RangedWeapon : Weapon
     private void Update()
     {
         ammoCounter.text = $"{bulletsInMag} / {spareBullets}";
+        if (bulletsInMag <= 0 && spareBullets > 0)
+            Reload();
     }
 
     public void Shoot(Vector2 direction)
@@ -64,7 +66,7 @@ public class RangedWeapon : Weapon
         }
         else
         {
-            Reload();
+            emptyMagSound.Play();
         }
     }
 
