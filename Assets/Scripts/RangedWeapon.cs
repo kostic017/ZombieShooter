@@ -27,6 +27,12 @@ public class RangedWeapon : Weapon
     [SerializeField]
     private float shootDamage;
 
+    [SerializeField]
+    private Transform shootingPoint;
+
+    [SerializeField]
+    private GameObject muzzleFlashPrefab;
+
     private int bulletsInMag;
 
     private void Awake()
@@ -45,11 +51,14 @@ public class RangedWeapon : Weapon
         {
             animator.SetTrigger("Shoot");
             shootSound.Play();
+            var muzzleFlash = Instantiate(muzzleFlashPrefab, shootingPoint);
+            Destroy(muzzleFlash, 0.1f);
+
             bulletsInMag -= shotInOneShot;
             if (bulletsInMag < 0)
                 bulletsInMag = 0;
 
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, range, LayerMask.GetMask("Zombies"));
+            RaycastHit2D hit = Physics2D.Raycast(shootingPoint.position, direction, range, LayerMask.GetMask("Zombies"));
             if (hit)
                 hit.transform.GetComponent<Zombie>().TakeDamage(shootDamage);
         }

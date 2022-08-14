@@ -15,7 +15,7 @@ public class HealthBar : MonoBehaviour
     [SerializeField]
     private Vector3 offset;
 
-    private void LateUpdate()
+    private void Update()
     {
         slider.transform.position = Camera.main.WorldToScreenPoint(transform.parent.position + offset);
     }
