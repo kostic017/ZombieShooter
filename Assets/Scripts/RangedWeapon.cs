@@ -27,9 +27,6 @@ public class RangedWeapon : Weapon
     [SerializeField]
     private float shootDamage;
 
-    [SerializeField]
-    private TextMeshProUGUI ammoCounter;
-
     private int bulletsInMag;
 
     private void Awake()

@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public enum WeaponType
@@ -31,9 +32,17 @@ public class Weapon : MonoBehaviour
     [SerializeField]
     private WeaponType type;
 
+    [SerializeField]
+    protected TextMeshProUGUI ammoCounter;
+
     public WeaponType Type => type;
 
     public Animator Animator => animator;
+
+    private void Update()
+    {
+        ammoCounter.text = "N/A";
+    }
 
     public void Melee()
     {
