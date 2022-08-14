@@ -13,7 +13,7 @@ public class Player : MonoBehaviour
     private Rigidbody2D rb;
     private HealthBar healthBar;
 
-    private readonly Dictionary<WeaponType, Weapon> weapons = new();
+    private Dictionary<WeaponType, Weapon> weapons;
 
     private Vector2 movement;
     private Vector2 mousePosition;
@@ -24,6 +24,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        weapons = new();
         InitializeWeapon();
         rb = GetComponent<Rigidbody2D>();
         healthBar = GetComponentInChildren<HealthBar>();

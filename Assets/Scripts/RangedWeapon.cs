@@ -1,4 +1,4 @@
-using System;
+using TMPro;
 using UnityEngine;
 
 public class RangedWeapon : Weapon
@@ -16,7 +16,7 @@ public class RangedWeapon : Weapon
     private int magazineSize;
 
     [SerializeField]
-    private int totalBullets;
+    private int spareBullets;
 
     [SerializeField]
     private int shotInOneShot = 1;
@@ -27,11 +27,19 @@ public class RangedWeapon : Weapon
     [SerializeField]
     private float shootDamage;
 
+    [SerializeField]
+    private TextMeshProUGUI ammoCounter;
+
     private int bulletsInMag;
 
     private void Awake()
     {
         bulletsInMag = magazineSize;
+    }
+
+    private void Update()
+    {
+        ammoCounter.text = $"{bulletsInMag} / {spareBullets}";
     }
 
     public void Shoot(Vector2 direction)
@@ -41,7 +49,8 @@ public class RangedWeapon : Weapon
             animator.SetTrigger("Shoot");
             shootSound.Play();
             bulletsInMag -= shotInOneShot;
-            totalBullets -= shotInOneShot;
+            if (bulletsInMag < 0)
+                bulletsInMag = 0;
 
             RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, range, LayerMask.GetMask("Zombies"));
             if (hit)
@@ -49,20 +58,31 @@ public class RangedWeapon : Weapon
         }
         else
         {
-            emptyMagSound.Play();
+            Reload();
         }
     }
 
     public void Reload()
     {
-        if (totalBullets > 0)
+        if (spareBullets > 0)
         {
             if (bulletsInMag < magazineSize)
             {
+                spareBullets += bulletsInMag;
+
+                if (spareBullets < magazineSize)
+                {
+                    bulletsInMag = spareBullets;
+                    spareBullets = 0;
+                }
+                else
+                {
+                    bulletsInMag = magazineSize;
+                    spareBullets -= magazineSize;
+                }
+
                 animator.SetTrigger("Reload");
                 reloadSound.Play();
-                totalBullets -= bulletsInMag;
-                bulletsInMag = magazineSize;
             }
         }
         else
@@ -73,6 +93,6 @@ public class RangedWeapon : Weapon
 
     public void AddAmmo(int amount)
     {
-        totalBullets += amount;
+        spareBullets += amount;
     }
 }
