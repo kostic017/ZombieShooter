@@ -1,8 +1,12 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField]
+    private TextMeshProUGUI zombiesLeftText;
+
     private int zombieCount;
 
     private void Start()
@@ -12,16 +16,20 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        zombiesLeftText.text = $"Zombies Left: {zombieCount}";
         if (zombieCount <= 0)
-        {
-            int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
-            if (SceneManager.sceneCountInBuildSettings > nextSceneIndex)
-                SceneManager.LoadScene(nextSceneIndex);
-        }
+            Invoke(nameof(GoToNextScene), 2f);
     }
 
-    public void ZombieKilled()
+    public void OnZombieKilled()
     {
         --zombieCount;
+    }
+
+    private void GoToNextScene()
+    {
+        int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+        if (SceneManager.sceneCountInBuildSettings > nextSceneIndex)
+            SceneManager.LoadScene(nextSceneIndex);
     }
 }

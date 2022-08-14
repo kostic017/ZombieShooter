@@ -96,7 +96,7 @@ public class Zombie : MonoBehaviour
         {
             if (dropsItem != null)
                 Instantiate(dropsItem, transform.position, Quaternion.identity);
-            gameManager.ZombieKilled();
+            gameManager.OnZombieKilled();
             Destroy(gameObject);
         }
     }
