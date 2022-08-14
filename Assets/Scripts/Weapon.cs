@@ -47,11 +47,12 @@ public class Weapon : MonoBehaviour
     public void Melee()
     {
         animator.SetTrigger("Melee");
-        var zombie = Physics2D.OverlapCircle(meleePoint.position, meleeRange, LayerMask.GetMask("Zombies"));
-        if (zombie)
+        var hit = Physics2D.OverlapCircle(meleePoint.position, meleeRange, LayerMask.GetMask("Attack Target"));
+        if (hit)
         {
             meleeHitSound.Play();
-            zombie.GetComponent<Zombie>().TakeDamage(meleeDamage);
+            var zombie = hit.GetComponent<Zombie>();
+            if (zombie) zombie.TakeDamage(meleeDamage);
         }
         else
         {

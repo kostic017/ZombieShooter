@@ -60,9 +60,12 @@ public class RangedWeapon : Weapon
             if (bulletsInMag < 0)
                 bulletsInMag = 0;
 
-            RaycastHit2D hit = Physics2D.Raycast(shootingPoint.position, direction, range, LayerMask.GetMask("Zombies"));
+            RaycastHit2D hit = Physics2D.Raycast(shootingPoint.position, direction, range, LayerMask.GetMask("Attack Target"));
             if (hit)
-                hit.transform.GetComponent<Zombie>().TakeDamage(shootDamage);
+            {
+                var zombie = hit.transform.GetComponent<Zombie>();
+                if (zombie) zombie.TakeDamage(shootDamage);
+            }
         }
         else
         {
