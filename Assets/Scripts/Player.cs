@@ -73,6 +73,13 @@ public class Player : MonoBehaviour
             pickupSound.Play();
             Destroy(other.gameObject);
         }
+        else if (other.gameObject.CompareTag("Medkit"))
+        {
+            health = 100f;
+            pickupSound.Play();
+            healthBar.SetHealth(health);
+            Destroy(other.gameObject);
+        }
     }
 
     private void InitializeWeapon()
