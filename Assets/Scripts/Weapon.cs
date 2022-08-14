@@ -28,12 +28,12 @@ public class Weapon : MonoBehaviour
     [SerializeField]
     protected Animator animator;
 
-    public WeaponType type;
+    [SerializeField]
+    private WeaponType type;
 
-    public void SetIsMoving(bool isMoving)
-    {
-        animator.SetBool("IsMoving", isMoving);
-    }
+    public WeaponType Type => type;
+
+    public Animator Animator => animator;
 
     public void Melee()
     {

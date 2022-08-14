@@ -33,23 +33,31 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        movement.x = Input.GetAxisRaw("Horizontal");
-        movement.y = Input.GetAxisRaw("Vertical");
-        mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        weapons[currentWeapon].SetIsMoving(movement != Vector2.zero);
+        if (weapons[currentWeapon].Animator.GetCurrentAnimatorStateInfo(0).IsTag("StopsMovement"))
+        {
+            movement = Vector2.zero;
+        }
+        else
+        {
+            movement.x = Input.GetAxisRaw("Horizontal");
+            movement.y = Input.GetAxisRaw("Vertical");
+            mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        if (Input.GetMouseButtonDown(0))
-            Shoot();
-        else if (Input.GetMouseButtonDown(1))
-            Melee();
+            if (Input.GetMouseButtonDown(0))
+                Shoot();
+            else if (Input.GetMouseButtonDown(1))
+                Melee();
 
-        if (Input.GetAxis("Mouse ScrollWheel") > 0f)
-            ChangeWeapon(-1);
-        else if (Input.GetAxis("Mouse ScrollWheel") < 0f)
-            ChangeWeapon(+1);
+            if (Input.GetAxis("Mouse ScrollWheel") > 0f)
+                ChangeWeapon(-1);
+            else if (Input.GetAxis("Mouse ScrollWheel") < 0f)
+                ChangeWeapon(+1);
 
-        if (Input.GetKeyUp(KeyCode.R) && weapons[currentWeapon] is RangedWeapon weapon)
-            weapon.Reload();
+            if (Input.GetKeyUp(KeyCode.R) && weapons[currentWeapon] is RangedWeapon weapon)
+                weapon.Reload();
+        }
+
+        weapons[currentWeapon].Animator.SetBool("IsMoving", movement != Vector2.zero);
     }
 
     private void FixedUpdate()
@@ -85,14 +93,14 @@ public class Player : MonoBehaviour
     private void InitializeWeapon()
     {
         var weapon = FindObjectOfType<Weapon>();
-        weapons.Add(weapon.type, weapon);
-        currentWeapon = weapon.type;
+        weapons.Add(weapon.Type, weapon);
+        currentWeapon = weapon.Type;
     }
 
     private Weapon FindWeapon(WeaponType type)
     {
         foreach (var weapon in FindObjectsOfType<Weapon>(true))
-            if (weapon.type == type)
+            if (weapon.Type == type)
                 return weapon;
         return null;
     }
