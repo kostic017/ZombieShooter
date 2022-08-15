@@ -12,6 +12,9 @@ public class Zombie : MonoBehaviour
     [SerializeField]
     private GameObject dropsItem;
 
+    [SerializeField]
+    private GameObject bloodsplat;
+
     private Player player;
     private Rigidbody2D rb;
     private Animator animator;
@@ -96,7 +99,8 @@ public class Zombie : MonoBehaviour
         {
             if (dropsItem != null)
                 Instantiate(dropsItem, transform.position, Quaternion.identity);
-            gameManager.OnZombieKilled();
+            Instantiate(bloodsplat, transform.position, Quaternion.identity);
+            gameManager.DecreaseZombieCount();
             Destroy(gameObject);
         }
     }

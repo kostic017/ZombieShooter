@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -21,7 +22,7 @@ public class GameManager : MonoBehaviour
             Invoke(nameof(GoToNextScene), 2f);
     }
 
-    public void OnZombieKilled()
+    public void DecreaseZombieCount()
     {
         --zombieCount;
     }

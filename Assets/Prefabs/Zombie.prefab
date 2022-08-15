@@ -468,6 +468,7 @@ MonoBehaviour:
   speed: 3
   damageDealt: 10
   dropsItem: {fileID: 0}
+  bloodsplat: {fileID: 8645840547921734262, guid: 03e3d54bef981a14e91c49b67eb93598, type: 3}
 --- !u!1 &4579638365849397276
 GameObject:
   m_ObjectHideFlags: 0
