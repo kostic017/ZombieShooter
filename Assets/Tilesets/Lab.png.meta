@@ -473,90 +473,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Lab_173
-      rect:
-        serializedVersion: 2
-        x: 640
-        y: 64
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 18d47289454d8564a8b7938fb871c202
-      internalID: 643725896
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Lab_174
-      rect:
-        serializedVersion: 2
-        x: 672
-        y: 64
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c86b40c0bbdefe049a1c7dcd270377b4
-      internalID: -1803829160
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Lab_175
-      rect:
-        serializedVersion: 2
-        x: 704
-        y: 64
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 046cae9515bd61b4fb64eb046a57a0a4
-      internalID: -1352702500
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Lab_176
-      rect:
-        serializedVersion: 2
-        x: 736
-        y: 64
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4b7603e5950f48e418336b8087fdc0c4
-      internalID: -876613888
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Lab_180
       rect:
         serializedVersion: 2
@@ -1182,6 +1098,27 @@ TextureImporter:
       bones: []
       spriteID: 019e3981396a0034781c4df07f178009
       internalID: -2105042088
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lab_16
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 448
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d30441f67808ad24ab960b322427f76a
+      internalID: -379806006
       vertices: []
       indices: 
       edges: []

@@ -102,6 +102,7 @@ public class RoomFirstDungeonGenerator : SimpleRandomWalkDungeonGenerator
                 position += Vector2Int.down;
             }
             corridor.Add(position);
+            corridor.Add(position - Vector2Int.left);
         }
         while (position.x != destination.x)
         {
@@ -113,6 +114,7 @@ public class RoomFirstDungeonGenerator : SimpleRandomWalkDungeonGenerator
                 position += Vector2Int.left;
             }
             corridor.Add(position);
+            corridor.Add(position + Vector2Int.up);
         }
         return corridor;
     }
