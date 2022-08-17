@@ -43,7 +43,7 @@ public class Player : MonoBehaviour
             movement.y = Input.GetAxisRaw("Vertical");
             mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButton(0))
                 Shoot();
             else if (Input.GetMouseButtonDown(1))
                 Melee();

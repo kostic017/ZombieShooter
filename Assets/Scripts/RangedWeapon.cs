@@ -19,10 +19,13 @@ public class RangedWeapon : Weapon
     private int spareBullets;
 
     [SerializeField]
+    private float range = 100f;
+
+    [SerializeField]
     private int shotInOneShot = 1;
 
     [SerializeField]
-    private float range = 100f;
+    private float cooldown = 0.5f;
 
     [SerializeField]
     private float shootDamage;
@@ -34,6 +37,8 @@ public class RangedWeapon : Weapon
     private GameObject muzzleFlashPrefab;
 
     private int bulletsInMag;
+
+    private float lastShot;
 
     private void Awake()
     {
@@ -51,20 +56,24 @@ public class RangedWeapon : Weapon
     {
         if (bulletsInMag > 0)
         {
-            animator.SetTrigger("Shoot");
-            shootSound.Play();
-            var muzzleFlash = Instantiate(muzzleFlashPrefab, shootingPoint);
-            Destroy(muzzleFlash, 0.1f);
-
-            bulletsInMag -= shotInOneShot;
-            if (bulletsInMag < 0)
-                bulletsInMag = 0;
-
-            RaycastHit2D hit = Physics2D.Raycast(shootingPoint.position, direction, range, LayerMask.GetMask("Attack Target"));
-            if (hit)
+            if (Time.time - lastShot > cooldown)
             {
-                var zombie = hit.transform.GetComponent<Zombie>();
-                if (zombie) zombie.TakeDamage(shootDamage);
+                animator.SetTrigger("Shoot");
+                shootSound.Play();
+                var muzzleFlash = Instantiate(muzzleFlashPrefab, shootingPoint);
+                Destroy(muzzleFlash, 0.1f);
+
+                bulletsInMag -= shotInOneShot;
+                lastShot = Time.time;
+                if (bulletsInMag < 0)
+                    bulletsInMag = 0;
+
+                RaycastHit2D hit = Physics2D.Raycast(shootingPoint.position, direction, range, LayerMask.GetMask("Attack Target"));
+                if (hit)
+                {
+                    var zombie = hit.transform.GetComponent<Zombie>();
+                    if (zombie) zombie.TakeDamage(shootDamage);
+                }
             }
         }
         else
