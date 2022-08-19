@@ -15,6 +15,9 @@ public class Zombie : MonoBehaviour
     [SerializeField]
     private GameObject bloodsplat;
 
+    [SerializeField]
+    private GameObject healthBarPrefab;
+
     private Player player;
     private Rigidbody2D rb;
     private Animator animator;
@@ -34,7 +37,11 @@ public class Zombie : MonoBehaviour
         player = FindObjectOfType<Player>();
         animator = GetComponent<Animator>();
         gameManager = FindObjectOfType<GameManager>();
-        healthBar = GetComponentInChildren<HealthBar>();
+
+        var healthBars = GameObject.Find("Health Bars");
+        var hb = Instantiate(healthBarPrefab, healthBars.transform);
+        healthBar = hb.GetComponent<HealthBar>();
+        healthBar.followCharacter = transform;
         healthBar.SetHealth(health);
     }
 
@@ -101,6 +108,7 @@ public class Zombie : MonoBehaviour
                 Instantiate(dropsItem, transform.position, Quaternion.identity);
             Instantiate(bloodsplat, transform.position, Quaternion.identity);
             gameManager.DecreaseZombieCount();
+            Destroy(healthBar.gameObject);
             Destroy(gameObject);
         }
     }

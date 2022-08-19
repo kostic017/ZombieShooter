@@ -10,10 +10,12 @@ public class Player : MonoBehaviour
     [SerializeField]
     private AudioSource pickupSound;
 
-    private Rigidbody2D rb;
+    [SerializeField]
     private HealthBar healthBar;
 
-    private Dictionary<WeaponType, Weapon> weapons;
+    private Rigidbody2D rb;
+
+    private readonly Dictionary<WeaponType, Weapon> weapons = new();
 
     private Vector2 movement;
     private Vector2 mousePosition;
@@ -24,16 +26,14 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        weapons = new();
         InitializeWeapon();
         rb = GetComponent<Rigidbody2D>();
-        healthBar = GetComponentInChildren<HealthBar>();
         healthBar.SetHealth(health);
     }
 
     private void Update()
     {
-        if (weapons[currentWeapon].Animator.GetCurrentAnimatorStateInfo(0).IsTag("StopsMovement"))
+        if (weapons[currentWeapon].Animator.GetCurrentAnimatorStateInfo(0).IsTag("Melee"))
         {
             movement = Vector2.zero;
         }
